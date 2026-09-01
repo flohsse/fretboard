@@ -1,0 +1,1234 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  >
+
+  <meta name="theme-color" content="#111111">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Gitarren Noten">
+
+  <title>Gitarren Noten Trainer</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      background: #101010;
+      color: white;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    button,
+    select {
+      font: inherit;
+    }
+
+    .app {
+      width: 100%;
+      min-height: 100vh;
+      padding:
+        max(10px, env(safe-area-inset-top))
+        max(12px, env(safe-area-inset-right))
+        max(10px, env(safe-area-inset-bottom))
+        max(12px, env(safe-area-inset-left));
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      text-align: center;
+      font-size: 22px;
+    }
+
+    .setup {
+      max-width: 500px;
+      margin: 30px auto;
+      padding: 20px;
+      background: #1d1d1f;
+      border-radius: 18px;
+    }
+
+    .setup label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .setup select {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      border: none;
+      margin-bottom: 16px;
+      font-size: 18px;
+    }
+
+    .primary {
+      width: 100%;
+      border: none;
+      border-radius: 14px;
+      padding: 14px;
+      background: #36c56c;
+      color: #07140b;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .game {
+      display: none;
+    }
+
+    .topbar {
+      display: flex;
+      gap: 8px;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .stat {
+      background: #202023;
+      padding: 7px 10px;
+      border-radius: 10px;
+    }
+
+    .board-wrap {
+      width: 100%;
+      overflow: hidden;
+      border-radius: 12px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.45);
+      margin-bottom: 10px;
+    }
+
+    .fretboard {
+      position: relative;
+      width: 100%;
+      height: 250px;
+
+      background:
+        linear-gradient(
+          90deg,
+          rgba(255,255,255,0.03),
+          rgba(0,0,0,0.12)
+        ),
+        repeating-linear-gradient(
+          0deg,
+          rgba(80,35,15,0.25),
+          rgba(80,35,15,0.25) 3px,
+          rgba(120,60,25,0.15) 4px,
+          rgba(80,35,15,0.25) 7px
+        ),
+        #5b2c14;
+
+      border: 3px solid #251208;
+    }
+
+    .nut {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 5px;
+      background: #efe4cf;
+      z-index: 5;
+    }
+
+    .frets {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .fret {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(
+        90deg,
+        #777,
+        #eee,
+        #777
+      );
+    }
+
+    .strings {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .string {
+      position: absolute;
+      left: 0;
+      right: 0;
+      background: linear-gradient(
+        180deg,
+        #777,
+        #ddd,
+        #666
+      );
+      box-shadow: 0 1px 1px rgba(0,0,0,0.7);
+      transform: translateY(-50%);
+      z-index: 3;
+    }
+
+    .s1 { height: 1px; }
+    .s2 { height: 1.5px; }
+    .s3 { height: 2px; }
+    .s4 { height: 2.5px; }
+    .s5 { height: 3px; }
+    .s6 { height: 3.5px; }
+
+    .marker {
+      position: absolute;
+      width: 11px;
+      height: 11px;
+      background: rgba(245,245,220,0.7);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1;
+    }
+
+    .target {
+      position: absolute;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #ff4040;
+      border: 3px solid white;
+      box-shadow:
+        0 0 0 3px rgba(255,64,64,0.25),
+        0 4px 10px rgba(0,0,0,0.5);
+      transform: translate(-50%, -50%);
+      z-index: 10;
+    }
+
+    .notes {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 7px;
+    }
+
+    .note-btn {
+      min-height: 48px;
+      border: none;
+      border-radius: 10px;
+      background: #2b2b30;
+      color: white;
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .note-btn:active {
+      transform: scale(0.97);
+      background: #46464d;
+    }
+
+    .result {
+      display: none;
+      max-width: 500px;
+      margin: 25px auto;
+      background: #1d1d1f;
+      padding: 22px;
+      border-radius: 18px;
+      text-align: center;
+    }
+
+    .result h2 {
+      margin-top: 0;
+    }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 18px 0;
+    }
+
+    .result-box {
+      background: #29292d;
+      border-radius: 12px;
+      padding: 12px 8px;
+    }
+
+    .result-value {
+      font-size: 24px;
+      font-weight: 800;
+      margin-top: 4px;
+    }
+
+    .secondary {
+      width: 100%;
+      border: none;
+      border-radius: 12px;
+      padding: 13px;
+      background: #34343a;
+      color: white;
+      font-weight: 700;
+      margin-top: 8px;
+    }
+
+    .orientation-warning {
+      display: none;
+      text-align: center;
+      padding: 40px 20px;
+      font-size: 20px;
+    }
+
+    @media (orientation: portrait) {
+      .orientation-warning {
+        display: block;
+      }
+
+      .main-content {
+        display: none;
+      }
+    }
+
+    @media (orientation: landscape) and (max-height: 500px) {
+      .app {
+        padding-top: 5px;
+        padding-bottom: 5px;
+      }
+
+      h1 {
+        display: none;
+      }
+
+      .fretboard {
+        height: 210px;
+      }
+
+      .topbar {
+        margin-bottom: 5px;
+      }
+
+      .note-btn {
+        min-height: 42px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <div class="orientation-warning">
+    📱 Bitte drehe dein iPhone ins Querformat.
+  </div>
+
+  <div class="main-content">
+
+    <h1>🎸 Gitarren Noten Trainer</h1>
+
+    <div id="setup" class="setup">
+
+      <label for="questionCount">
+        Anzahl der Noten
+      </label>
+
+      <select id="questionCount">
+        <option value="10">10 Noten</option>
+        <option value="20" selected>20 Noten</option>
+        <option value="30">30 Noten</option>
+        <option value="50">50 Noten</option>
+        <option value="100">100 Noten</option>
+      </select>
+
+      <button
+        id="startButton"
+        class="primary"
+      >
+        Training starten
+      </button>
+
+    </div>
+
+    <div id="game" class="game">
+
+      <div class="topbar">
+
+        <div class="stat">
+          Note:
+          <span id="progress">1 / 20</span>
+        </div>
+
+        <div class="stat">
+          ⏱
+          <span id="timer">00:00.0</span>
+        </div>
+
+        <div class="stat">
+          ✓
+          <span id="correctCount">0</span>
+        </div>
+
+        <div class="stat">
+          ✕
+          <span id="wrongCount">0</span>
+        </div>
+
+      </div>
+
+      <div class="board-wrap">
+
+        <div
+          id="fretboard"
+          class="fretboard"
+        >
+
+          <div class="nut"></div>
+
+          <div
+            id="frets"
+            class="frets"
+          ></div>
+
+          <div
+            id="markers"
+          ></div>
+
+          <div
+            id="strings"
+            class="strings"
+          ></div>
+
+          <div
+            id="target"
+            class="target"
+          ></div>
+
+        </div>
+
+      </div>
+
+      <div
+        id="noteButtons"
+        class="notes"
+      ></div>
+
+    </div>
+
+    <div
+      id="result"
+      class="result"
+    >
+
+      <h2>Training beendet 🎸</h2>
+
+      <div class="result-grid">
+
+        <div class="result-box">
+          Gesamtzeit
+          <div
+            id="resultTime"
+            class="result-value"
+          ></div>
+        </div>
+
+        <div class="result-box">
+          Trefferquote
+          <div
+            id="resultAccuracy"
+            class="result-value"
+          ></div>
+        </div>
+
+        <div class="result-box">
+          Richtig
+          <div
+            id="resultCorrect"
+            class="result-value"
+          ></div>
+        </div>
+
+        <div class="result-box">
+          Ø pro Note
+          <div
+            id="resultAverage"
+            class="result-value"
+          ></div>
+        </div>
+
+      </div>
+
+      <div
+        id="bestTime"
+        style="
+          margin: 10px 0 16px;
+          font-weight: 600;
+        "
+      ></div>
+
+      <button
+        id="againButton"
+        class="primary"
+      >
+        Nochmal
+      </button>
+
+      <button
+        id="menuButton"
+        class="secondary"
+      >
+        Anzahl ändern
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+
+  const notes = [
+    "C",
+    "C♯",
+    "D",
+    "D♯",
+    "E",
+    "F",
+    "F♯",
+    "G",
+    "G♯",
+    "A",
+    "A♯",
+    "B"
+  ];
+
+  /*
+    Gitarrenstimmung:
+
+    hohe e-Saite = E
+    B-Saite      = B
+    G-Saite      = G
+    D-Saite      = D
+    A-Saite      = A
+    tiefe E      = E
+
+    Die Zahlen entsprechen
+    dem Index im notes-Array.
+  */
+
+  const openStrings = [
+    4,   // hohe E
+    11,  // B
+    7,   // G
+    2,   // D
+    9,   // A
+    4    // tiefe E
+  ];
+
+  const setup =
+    document.getElementById("setup");
+
+  const game =
+    document.getElementById("game");
+
+  const result =
+    document.getElementById("result");
+
+  const fretboard =
+    document.getElementById("fretboard");
+
+  const frets =
+    document.getElementById("frets");
+
+  const strings =
+    document.getElementById("strings");
+
+  const markers =
+    document.getElementById("markers");
+
+  const target =
+    document.getElementById("target");
+
+  const noteButtons =
+    document.getElementById("noteButtons");
+
+  const progress =
+    document.getElementById("progress");
+
+  const timerDisplay =
+    document.getElementById("timer");
+
+  const correctDisplay =
+    document.getElementById("correctCount");
+
+  const wrongDisplay =
+    document.getElementById("wrongCount");
+
+  let totalQuestions = 20;
+  let currentQuestion = 0;
+
+  let correct = 0;
+  let wrong = 0;
+
+  let currentString = 0;
+  let currentFret = 0;
+  let correctNote = "";
+
+  let previousString = -1;
+  let previousFret = -1;
+
+  let startTime = 0;
+  let timerInterval = null;
+  let finalTime = 0;
+
+  function buildFretboard() {
+
+    frets.innerHTML = "";
+    strings.innerHTML = "";
+    markers.innerHTML = "";
+
+    /*
+      22 Bünde.
+      Die Bundlinien sind gleichmäßig verteilt.
+    */
+
+    for (
+      let fret = 1;
+      fret <= 22;
+      fret++
+    ) {
+
+      const line =
+        document.createElement("div");
+
+      line.className = "fret";
+
+      line.style.left =
+        (fret / 22 * 100) + "%";
+
+      frets.appendChild(line);
+
+    }
+
+    /*
+      6 Gitarrensaiten
+    */
+
+    for (
+      let string = 0;
+      string < 6;
+      string++
+    ) {
+
+      const line =
+        document.createElement("div");
+
+      line.className =
+        "string s" + (string + 1);
+
+      line.style.top =
+        getStringY(string) + "%";
+
+      strings.appendChild(line);
+
+    }
+
+    /*
+      Bundmarkierungen
+    */
+
+    const singleMarkers = [
+      3,
+      5,
+      7,
+      9,
+      15,
+      17,
+      19,
+      21
+    ];
+
+    singleMarkers.forEach(
+      fret => {
+
+        createMarker(
+          fret,
+          50
+        );
+
+      }
+    );
+
+    /*
+      Zwei Punkte am 12. Bund
+    */
+
+    createMarker(
+      12,
+      35
+    );
+
+    createMarker(
+      12,
+      65
+    );
+
+  }
+
+  function createMarker(
+    fret,
+    y
+  ) {
+
+    const marker =
+      document.createElement("div");
+
+    marker.className = "marker";
+
+    /*
+      Mitte des jeweiligen Bundes
+    */
+
+    marker.style.left =
+      (
+        (fret - 0.5)
+        /
+        22
+        *
+        100
+      )
+      +
+      "%";
+
+    marker.style.top =
+      y + "%";
+
+    markers.appendChild(marker);
+
+  }
+
+  function getStringY(
+    stringNumber
+  ) {
+
+    /*
+      etwas Abstand oben/unten
+    */
+
+    return (
+      10
+      +
+      stringNumber
+      *
+      16
+    );
+
+  }
+
+  function buildNoteButtons() {
+
+    noteButtons.innerHTML = "";
+
+    notes.forEach(
+      note => {
+
+        const button =
+          document.createElement(
+            "button"
+          );
+
+        button.className =
+          "note-btn";
+
+        button.textContent =
+          note;
+
+        button.addEventListener(
+          "click",
+          () => answer(note)
+        );
+
+        noteButtons.appendChild(
+          button
+        );
+
+      }
+    );
+
+  }
+
+  function startGame() {
+
+    totalQuestions =
+      Number(
+        document
+          .getElementById(
+            "questionCount"
+          )
+          .value
+      );
+
+    currentQuestion = 0;
+    correct = 0;
+    wrong = 0;
+
+    previousString = -1;
+    previousFret = -1;
+
+    setup.style.display =
+      "none";
+
+    result.style.display =
+      "none";
+
+    game.style.display =
+      "block";
+
+    correctDisplay.textContent =
+      "0";
+
+    wrongDisplay.textContent =
+      "0";
+
+    startTime =
+      performance.now();
+
+    timerInterval =
+      setInterval(
+        updateTimer,
+        50
+      );
+
+    nextQuestion();
+
+  }
+
+  function nextQuestion() {
+
+    currentQuestion++;
+
+    progress.textContent =
+      currentQuestion
+      +
+      " / "
+      +
+      totalQuestions;
+
+    let newString;
+    let newFret;
+
+    do {
+
+      newString =
+        Math.floor(
+          Math.random() * 6
+        );
+
+      /*
+        Bund 1 bis 22.
+        Leersaiten werden zunächst
+        nicht abgefragt.
+      */
+
+      newFret =
+        Math.floor(
+          Math.random() * 22
+        )
+        +
+        1;
+
+    }
+    while (
+      newString ===
+        previousString
+      &&
+      newFret ===
+        previousFret
+    );
+
+    currentString =
+      newString;
+
+    currentFret =
+      newFret;
+
+    previousString =
+      newString;
+
+    previousFret =
+      newFret;
+
+    const noteIndex =
+      (
+        openStrings[
+          currentString
+        ]
+        +
+        currentFret
+      )
+      %
+      12;
+
+    correctNote =
+      notes[noteIndex];
+
+    positionTarget();
+
+  }
+
+  function positionTarget() {
+
+    /*
+      Punkt steht in der Mitte
+      des Bundes.
+    */
+
+    const x =
+      (
+        currentFret
+        -
+        0.5
+      )
+      /
+      22
+      *
+      100;
+
+    const y =
+      getStringY(
+        currentString
+      );
+
+    target.style.left =
+      x + "%";
+
+    target.style.top =
+      y + "%";
+
+  }
+
+  function answer(
+    selectedNote
+  ) {
+
+    if (
+      selectedNote ===
+      correctNote
+    ) {
+
+      correct++;
+
+    }
+    else {
+
+      wrong++;
+
+    }
+
+    correctDisplay.textContent =
+      correct;
+
+    wrongDisplay.textContent =
+      wrong;
+
+    if (
+      currentQuestion
+      >=
+      totalQuestions
+    ) {
+
+      endGame();
+
+    }
+    else {
+
+      nextQuestion();
+
+    }
+
+  }
+
+  function updateTimer() {
+
+    const elapsed =
+      performance.now()
+      -
+      startTime;
+
+    timerDisplay.textContent =
+      formatTime(
+        elapsed
+      );
+
+  }
+
+  function formatTime(
+    milliseconds
+  ) {
+
+    const totalSeconds =
+      milliseconds
+      /
+      1000;
+
+    const minutes =
+      Math.floor(
+        totalSeconds / 60
+      );
+
+    const seconds =
+      Math.floor(
+        totalSeconds % 60
+      );
+
+    const tenths =
+      Math.floor(
+        (
+          totalSeconds
+          %
+          1
+        )
+        *
+        10
+      );
+
+    return (
+      String(minutes)
+        .padStart(2, "0")
+      +
+      ":"
+      +
+      String(seconds)
+        .padStart(2, "0")
+      +
+      "."
+      +
+      tenths
+    );
+
+  }
+
+  function endGame() {
+
+    clearInterval(
+      timerInterval
+    );
+
+    finalTime =
+      performance.now()
+      -
+      startTime;
+
+    game.style.display =
+      "none";
+
+    result.style.display =
+      "block";
+
+    const accuracy =
+      Math.round(
+        (
+          correct
+          /
+          totalQuestions
+        )
+        *
+        100
+      );
+
+    const average =
+      finalTime
+      /
+      totalQuestions
+      /
+      1000;
+
+    document
+      .getElementById(
+        "resultTime"
+      )
+      .textContent =
+        formatTime(
+          finalTime
+        );
+
+    document
+      .getElementById(
+        "resultAccuracy"
+      )
+      .textContent =
+        accuracy + "%";
+
+    document
+      .getElementById(
+        "resultCorrect"
+      )
+      .textContent =
+        correct
+        +
+        " / "
+        +
+        totalQuestions;
+
+    document
+      .getElementById(
+        "resultAverage"
+      )
+      .textContent =
+        average.toFixed(2)
+        +
+        " s";
+
+    saveBestTime();
+
+  }
+
+  function saveBestTime() {
+
+    /*
+      Bestzeit zählt nur,
+      wenn alle Antworten
+      richtig waren.
+    */
+
+    const key =
+      "guitarBest_"
+      +
+      totalQuestions;
+
+    const oldBest =
+      Number(
+        localStorage.getItem(key)
+      );
+
+    const bestTimeElement =
+      document.getElementById(
+        "bestTime"
+      );
+
+    if (
+      correct !==
+      totalQuestions
+    ) {
+
+      if (oldBest) {
+
+        bestTimeElement.textContent =
+          "Bestzeit: "
+          +
+          formatTime(
+            oldBest
+          )
+          +
+          " – nur bei 100 % richtig";
+
+      }
+      else {
+
+        bestTimeElement.textContent =
+          "Für eine Bestzeit musst du alle Noten richtig beantworten.";
+
+      }
+
+      return;
+
+    }
+
+    if (
+      !oldBest
+      ||
+      finalTime
+      <
+      oldBest
+    ) {
+
+      localStorage.setItem(
+        key,
+        finalTime
+      );
+
+      bestTimeElement.textContent =
+        "🏆 Neue Bestzeit: "
+        +
+        formatTime(
+          finalTime
+        );
+
+    }
+    else {
+
+      bestTimeElement.textContent =
+        "Bestzeit: "
+        +
+        formatTime(
+          oldBest
+        );
+
+    }
+
+  }
+
+  document
+    .getElementById(
+      "startButton"
+    )
+    .addEventListener(
+      "click",
+      startGame
+    );
+
+  document
+    .getElementById(
+      "againButton"
+    )
+    .addEventListener(
+      "click",
+      startGame
+    );
+
+  document
+    .getElementById(
+      "menuButton"
+    )
+    .addEventListener(
+      "click",
+      () => {
+
+        result.style.display =
+          "none";
+
+        setup.style.display =
+          "block";
+
+      }
+    );
+
+  buildFretboard();
+  buildNoteButtons();
+
+</script>
+
+</body>
+</html>
