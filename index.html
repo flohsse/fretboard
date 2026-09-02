@@ -8,7 +8,7 @@
   content="width=device-width, initial-scale=1, viewport-fit=cover"
 >
 
-<meta name="theme-color" content="#0d0d0f">
+<meta name="theme-color" content="#090909">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Gitarren Noten">
@@ -28,7 +28,7 @@ body {
   margin: 0;
   width: 100%;
   height: 100%;
-  background: #0d0d0f;
+  background: #090909;
   color: white;
 
   font-family:
@@ -36,9 +36,7 @@ body {
     BlinkMacSystemFont,
     "Segoe UI",
     sans-serif;
-}
 
-body {
   overflow: hidden;
 }
 
@@ -47,9 +45,13 @@ select {
   font: inherit;
 }
 
+/* ===============================
+   APP
+================================ */
+
 .app {
   width: 100%;
-  height: 100vh;
+  height: 100dvh;
 
   padding:
     max(3px, env(safe-area-inset-top))
@@ -58,10 +60,9 @@ select {
     max(8px, env(safe-area-inset-left));
 }
 
-
-/* ------------------------
+/* ===============================
    PORTRAIT
------------------------- */
+================================ */
 
 .orientation-warning {
   display: none;
@@ -79,24 +80,19 @@ select {
   .main-content {
     display: none;
   }
-
 }
 
-
-/* ------------------------
+/* ===============================
    START / RESULT
------------------------- */
+================================ */
 
 .setup,
 .result {
-
-  max-width: 520px;
-  margin: 20px auto;
-
-  padding: 18px;
+  max-width: 500px;
+  margin: 25px auto;
+  padding: 20px;
 
   background: #1b1b1e;
-
   border-radius: 18px;
 }
 
@@ -108,312 +104,347 @@ select {
 
 .setup label {
   display: block;
-  margin-bottom: 7px;
+  margin-bottom: 8px;
   font-weight: 700;
 }
 
 select {
-
   width: 100%;
-
-  padding: 11px;
+  padding: 12px;
+  margin-bottom: 15px;
 
   border: none;
+  border-radius: 12px;
 
-  border-radius: 11px;
-
-  margin-bottom: 14px;
+  background: white;
+  color: black;
 }
 
 .primary,
 .secondary {
-
   width: 100%;
-
   padding: 13px;
 
   border: none;
-
   border-radius: 12px;
 
   font-weight: 800;
 }
 
 .primary {
-  background: #37d071;
-  color: #07140b;
+  background: #39d274;
+  color: #07150c;
 }
 
 .secondary {
-
   margin-top: 8px;
-
-  background: #323237;
+  background: #303035;
   color: white;
 }
 
-
-/* ------------------------
+/* ===============================
    GAME
------------------------- */
+================================ */
 
 .game {
   display: none;
 }
 
-
-/* ------------------------
+/* ===============================
    STATUS
------------------------- */
+================================ */
 
 .topbar {
+  width: 84%;
+  margin: 0 auto 4px;
 
   display: grid;
-
-  grid-template-columns:
-    repeat(4, 1fr);
-
+  grid-template-columns: repeat(4, 1fr);
   gap: 6px;
-
-  margin-bottom: 5px;
 }
 
 .stat {
+  height: 46px;
 
-  padding: 4px;
-
-  background: #202024;
-
-  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 
   text-align: center;
 
-  font-size: 12px;
+  background:
+    linear-gradient(
+      180deg,
+      #1b1b1e,
+      #151517
+    );
 
-  font-weight: 700;
+  border-radius: 11px;
+
+  font-size: 11px;
+  font-weight: 600;
 }
 
 .stat span {
-  font-size: 15px;
+  margin-top: 1px;
+  font-size: 17px;
+  font-weight: 800;
 }
 
+/* ===============================
+   GITARRENHALS BEREICH
+================================ */
 
-/* ------------------------
-   BOARD AREA
------------------------- */
-
-.board-section {
-
+.neck-stage {
   position: relative;
 
   width: 100%;
+  height: 245px;
 
-  height: 231px;
+  /*
+    Perspektive für die Kippung
+    um die Längsachse.
+  */
 
-  margin-bottom: 4px;
-}
-
-
-/*
-Das Griffbrett wird nicht als
-Rechteck dargestellt.
-
-Links am Sattel schmal,
-rechts breiter.
-*/
-
-.fretboard {
-
-  position: absolute;
-
-  left: 0;
-  right: 0;
-
-  top: 8px;
-
-  height: 205px;
+  perspective: 900px;
+  perspective-origin: 50% 35%;
 
   overflow: visible;
 }
 
+/*
+  Dieser Container dreht den
+  gesamten Hals leicht diagonal.
+*/
 
-/* Holzfläche */
-
-.wood {
-
+.neck-angle {
   position: absolute;
 
-  inset: 0;
+  left: 4%;
+  top: 30px;
 
-  clip-path: polygon(
-    0% 20%,
-    100% 0%,
-    100% 100%,
-    0% 80%
-  );
+  width: 94%;
+  height: 185px;
+
+  transform:
+    rotateZ(8deg);
+
+  transform-origin:
+    50% 50%;
+}
+
+/*
+  DAS IST DIE WICHTIGE KIPPUNG.
+
+  rotateX kippt das Griffbrett
+  um seine Längsachse.
+
+  Positive Werte:
+  hohe e-Seite kommt optisch
+  zum Betrachter.
+*/
+
+.neck-roll {
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+
+  transform:
+    rotateX(43deg);
+
+  transform-origin:
+    center center;
+
+  transform-style:
+    preserve-3d;
+}
+
+/* ===============================
+   GRIFFBRETT
+================================ */
+
+.fretboard {
+  position: absolute;
+
+  left: 0;
+  top: 0;
+
+  width: 100%;
+  height: 155px;
 
   background:
 
     repeating-linear-gradient(
       0deg,
-      rgba(40,12,3,.22) 0px,
-      rgba(40,12,3,.22) 3px,
-      rgba(130,55,20,.14) 4px,
-      rgba(60,20,6,.22) 7px
+      rgba(35, 10, 3, .28) 0px,
+      rgba(35, 10, 3, .28) 3px,
+      rgba(120, 52, 18, .14) 4px,
+      rgba(60, 20, 7, .24) 7px
     ),
 
     linear-gradient(
       90deg,
-      #683117,
-      #4b200e
+      #643016,
+      #3e1b0c
     );
 
-  border-radius: 10px;
+  border:
+    3px solid #29140a;
+
+  border-radius:
+    10px;
 
   box-shadow:
-    0 5px 16px rgba(0,0,0,.55);
+    0 15px 18px rgba(0,0,0,.58);
+
+  overflow: hidden;
+
+  transform-style:
+    preserve-3d;
+}
+
+/*
+  kleine Seitenkante an der
+  hohen e-Seite.
+
+  Dadurch wirkt diese Seite
+  näher am Betrachter.
+*/
+
+.fretboard::before {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  right: 0;
+  top: -8px;
+
+  height: 9px;
+
+  background:
+    linear-gradient(
+      #c49a58,
+      #8f642f
+    );
+
+  transform:
+    rotateX(-90deg);
+
+  transform-origin:
+    bottom;
 
   z-index: 1;
 }
 
-
-/* dunkler Rand */
-
-.board-outline {
-
-  position: absolute;
-
-  inset: 0;
-
-  clip-path: polygon(
-    0% 20%,
-    100% 0%,
-    100% 100%,
-    0% 80%
-  );
-
-  border: 3px solid #271309;
-
-  border-radius: 10px;
-
-  pointer-events: none;
-
-  z-index: 20;
-}
-
-
-/* ------------------------
+/* ===============================
    SATTEL
------------------------- */
+================================ */
 
 .nut {
-
   position: absolute;
 
   left: 0;
+  top: 0;
 
-  top: 20%;
-
-  height: 60%;
-
-  width: 7px;
+  width: 8px;
+  height: 100%;
 
   background:
     linear-gradient(
       90deg,
-      #bfb39a,
-      #fff5df,
-      #b6aa92
+      #a99e85,
+      #fff7e6,
+      #bdb096
     );
 
-  z-index: 12;
-
   box-shadow:
-    2px 0 3px rgba(0,0,0,.6);
+    2px 0 4px rgba(0,0,0,.6);
+
+  z-index: 15;
 }
 
-
-/* ------------------------
+/* ===============================
    BÜNDE
------------------------- */
+================================ */
 
 .fret {
-
   position: absolute;
+
+  top: 0;
+  bottom: 0;
 
   width: 2px;
 
+  transform:
+    translateX(-1px);
+
   background:
     linear-gradient(
       90deg,
-      #666,
-      #eee,
+      #555,
+      #f0f0f0,
       #777
     );
 
-  transform-origin: center;
-
-  z-index: 6;
-
   box-shadow:
     1px 0 1px rgba(0,0,0,.4);
+
+  z-index: 8;
 }
 
-
-/* ------------------------
+/* ===============================
    SAITEN
------------------------- */
+================================ */
 
 .string {
-
   position: absolute;
 
   left: 0;
+  right: 0;
 
-  height: 2px;
-
-  transform-origin: left center;
-
-  z-index: 9;
+  transform:
+    translateY(-50%);
 
   background:
     linear-gradient(
       180deg,
-      #5d5d5d,
-      #ececec,
+      #555,
+      #eee,
       #666
     );
 
   box-shadow:
-    0 1px 1px rgba(0,0,0,.65);
+    0 1px 1px rgba(0,0,0,.7);
+
+  z-index: 12;
 }
 
-.string.s1 { height: 1px; }
-.string.s2 { height: 1.2px; }
-.string.s3 { height: 1.6px; }
-.string.s4 { height: 2px; }
-.string.s5 { height: 2.6px; }
-.string.s6 { height: 3.1px; }
+.s1 { height: 1px; }
+.s2 { height: 1.2px; }
+.s3 { height: 1.5px; }
+.s4 { height: 2px; }
+.s5 { height: 2.5px; }
+.s6 { height: 3px; }
 
-
-/* ------------------------
-   INLAYS
------------------------- */
+/* ===============================
+   LES-PAUL TRAPEZE
+================================ */
 
 .inlay {
-
   position: absolute;
+
+  width: 26px;
+  height: 38px;
 
   transform:
     translate(-50%, -50%);
 
-  width: 22px;
-  height: 31px;
-
   clip-path:
     polygon(
-      17% 0,
-      83% 0,
+      15% 0,
+      85% 0,
       70% 100%,
       30% 100%
     );
@@ -422,31 +453,26 @@ rechts breiter.
     linear-gradient(
       135deg,
       #fff,
-      #d3c8aa,
-      #fff
+      #d3c8a9,
+      #fff,
+      #cfc5a9
     );
 
   opacity: .9;
 
-  z-index: 4;
-
-  box-shadow:
-    inset 0 0 4px rgba(255,255,255,.8);
+  z-index: 5;
 }
 
 .inlay.twelve {
-
-  width: 27px;
-  height: 40px;
+  width: 31px;
+  height: 48px;
 }
 
-
-/* ------------------------
-   TARGET
------------------------- */
+/* ===============================
+   ZIEL
+================================ */
 
 .target {
-
   position: absolute;
 
   width: 29px;
@@ -454,57 +480,55 @@ rechts breiter.
 
   border-radius: 50%;
 
-  background: #ff4242;
+  background: #ff4141;
 
   border: 3px solid white;
 
   box-shadow:
-    0 0 0 4px rgba(255,66,66,.25),
-    0 3px 8px rgba(0,0,0,.55);
+    0 0 0 4px rgba(255,65,65,.25),
+    0 4px 9px rgba(0,0,0,.55);
 
   transform:
-    translate(-50%, -50%);
+    translate(-50%, -50%)
+    translateZ(8px);
 
-  z-index: 15;
+  z-index: 25;
 }
 
-
-/* ------------------------
-   FRET NUMBERS
------------------------- */
+/* ===============================
+   BUNDNUMMERN
+================================ */
 
 .fret-labels {
-
   position: absolute;
 
   left: 0;
-  right: 0;
+  top: 160px;
 
-  bottom: 0;
+  width: 100%;
+  height: 18px;
 
-  height: 19px;
+  pointer-events: none;
 }
 
 .fret-label {
-
   position: absolute;
 
   transform:
     translateX(-50%);
 
-  color: #c9c9cd;
-
-  font-size: 10px;
-
+  font-size: 9px;
   font-weight: 700;
+
+  color: #d1d1d4;
 }
 
-
-/* ------------------------
-   NOTE BUTTONS
------------------------- */
+/* ===============================
+   NOTENBUTTONS
+================================ */
 
 .notes {
+  position: relative;
 
   display: grid;
 
@@ -512,48 +536,54 @@ rechts breiter.
     repeat(6, 1fr);
 
   gap: 6px;
+
+  margin-top: 1px;
 }
 
 .note-btn {
-
   height: 43px;
 
   border: none;
 
   border-radius: 10px;
 
-  background: #2b2b30;
+  background:
+    linear-gradient(
+      180deg,
+      #2c2c31,
+      #252529
+    );
 
   color: white;
 
   font-size: 18px;
-
   font-weight: 800;
 }
 
 .note-btn:active {
-  transform: scale(.97);
+  transform:
+    scale(.97);
 }
 
 .note-btn.correct {
-  background: #24b95e !important;
+  background:
+    #22b85d !important;
 }
 
 .note-btn.wrong {
-  background: #db3b3b !important;
+  background:
+    #db3a3a !important;
 }
 
-
-/* ------------------------
+/* ===============================
    RESULT
------------------------- */
+================================ */
 
 .result {
   display: none;
 }
 
 .result-grid {
-
   display: grid;
 
   grid-template-columns:
@@ -565,18 +595,16 @@ rechts breiter.
 }
 
 .result-box {
-
   padding: 10px;
 
-  background: #29292d;
+  text-align: center;
 
   border-radius: 11px;
 
-  text-align: center;
+  background: #29292d;
 }
 
 .result-value {
-
   margin-top: 4px;
 
   font-size: 23px;
@@ -585,63 +613,71 @@ rechts breiter.
 }
 
 .best {
-  text-align: center;
-  font-weight: 700;
   margin-bottom: 14px;
+
+  text-align: center;
+
+  font-weight: 700;
 }
 
-
-/* ------------------------
+/* ===============================
    KLEINE IPHONES
------------------------- */
+================================ */
 
 @media
 (orientation: landscape)
 and
 (max-height: 430px) {
 
-  .board-section {
-    height: 198px;
-  }
-
-  .fretboard {
-    height: 173px;
-  }
-
-  .note-btn {
-    height: 38px;
-    font-size: 16px;
-  }
-
   .topbar {
-    gap: 4px;
-    margin-bottom: 3px;
+    height: 38px;
   }
 
   .stat {
-    padding: 2px;
-    font-size: 10px;
+    height: 38px;
+    font-size: 9px;
   }
 
   .stat span {
-    font-size: 13px;
+    font-size: 14px;
+  }
+
+  .neck-stage {
+    height: 204px;
+  }
+
+  .neck-angle {
+    top: 18px;
+    height: 160px;
+  }
+
+  .fretboard {
+    height: 135px;
+  }
+
+  .fret-labels {
+    top: 140px;
+  }
+
+  .note-btn {
+    height: 37px;
+    font-size: 16px;
   }
 
   .inlay {
-    width: 18px;
-    height: 26px;
+    width: 21px;
+    height: 31px;
   }
 
   .inlay.twelve {
-    width: 22px;
-    height: 33px;
+    width: 25px;
+    height: 38px;
   }
 
   .target {
     width: 25px;
     height: 25px;
   }
-
 }
 
 </style>
@@ -657,8 +693,9 @@ and
 
 <div class="main-content">
 
-
-<!-- START -->
+<!-- =========================
+     START
+========================= -->
 
 <div
   id="setup"
@@ -709,9 +746,9 @@ Training starten
 
 </div>
 
-
-
-<!-- GAME -->
+<!-- =========================
+     GAME
+========================= -->
 
 <div
   id="game"
@@ -721,47 +758,63 @@ Training starten
 <div class="topbar">
 
 <div class="stat">
-Note<br>
+
+Note
+
 <span id="progress">
 1 / 20
 </span>
+
 </div>
 
+
 <div class="stat">
-⏱ Zeit<br>
+
+⏱ Zeit
+
 <span id="timer">
 00:00.0
 </span>
+
 </div>
 
+
 <div class="stat">
-✓ Richtig<br>
+
+✓ Richtig
+
 <span id="correctCount">
 0
 </span>
+
 </div>
 
+
 <div class="stat">
-✕ Fehler<br>
+
+✕ Fehler
+
 <span id="wrongCount">
 0
 </span>
-</div>
 
 </div>
 
+</div>
 
 
-<div class="board-section">
+<!-- GRIFFBRETT -->
+
+<div class="neck-stage">
+
+<div class="neck-angle">
+
+<div class="neck-roll">
 
 <div
   id="fretboard"
   class="fretboard"
 >
-
-<div class="wood"></div>
-
-<div class="board-outline"></div>
 
 <div class="nut"></div>
 
@@ -778,13 +831,18 @@ Note<br>
 
 </div>
 
+
 <div
   id="fretLabels"
   class="fret-labels"
 ></div>
 
 </div>
+</div>
+</div>
 
+
+<!-- BUTTONS -->
 
 <div
   id="noteButtons"
@@ -793,9 +851,9 @@ Note<br>
 
 </div>
 
-
-
-<!-- RESULT -->
+<!-- =========================
+     RESULT
+========================= -->
 
 <div
   id="result"
@@ -809,35 +867,47 @@ Training beendet 🎸
 <div class="result-grid">
 
 <div class="result-box">
+
 Gesamtzeit
+
 <div
   id="resultTime"
   class="result-value"
 ></div>
+
 </div>
 
 <div class="result-box">
+
 Fehler
+
 <div
   id="resultErrors"
   class="result-value"
 ></div>
+
 </div>
 
 <div class="result-box">
+
 Noten
+
 <div
   id="resultCorrect"
   class="result-value"
 ></div>
+
 </div>
 
 <div class="result-box">
+
 Ø pro Note
+
 <div
   id="resultAverage"
   class="result-value"
 ></div>
+
 </div>
 
 </div>
@@ -863,17 +933,15 @@ Anzahl ändern
 
 </div>
 
-
 </div>
 </div>
 
 
 <script>
 
-
-/* ------------------------
-   NOTES
------------------------- */
+/* ===============================
+   NOTEN
+================================ */
 
 const notes = [
   "C",
@@ -891,6 +959,17 @@ const notes = [
 ];
 
 
+/*
+Standardstimmung:
+
+hohe e
+B
+G
+D
+A
+tiefe E
+*/
+
 const openStrings = [
   4,
   11,
@@ -901,56 +980,79 @@ const openStrings = [
 ];
 
 
-/* ------------------------
-   ELEMENTS
------------------------- */
+/* ===============================
+   ELEMENTE
+================================ */
 
 const setup =
-  document.getElementById("setup");
+  document.getElementById(
+    "setup"
+  );
 
 const game =
-  document.getElementById("game");
+  document.getElementById(
+    "game"
+  );
 
 const result =
-  document.getElementById("result");
-
-const fretboard =
-  document.getElementById("fretboard");
+  document.getElementById(
+    "result"
+  );
 
 const frets =
-  document.getElementById("frets");
+  document.getElementById(
+    "frets"
+  );
 
 const strings =
-  document.getElementById("strings");
+  document.getElementById(
+    "strings"
+  );
 
 const inlays =
-  document.getElementById("inlays");
+  document.getElementById(
+    "inlays"
+  );
 
 const fretLabels =
-  document.getElementById("fretLabels");
+  document.getElementById(
+    "fretLabels"
+  );
 
 const target =
-  document.getElementById("target");
+  document.getElementById(
+    "target"
+  );
 
 const noteButtons =
-  document.getElementById("noteButtons");
+  document.getElementById(
+    "noteButtons"
+  );
 
 const progress =
-  document.getElementById("progress");
+  document.getElementById(
+    "progress"
+  );
 
 const timerDisplay =
-  document.getElementById("timer");
+  document.getElementById(
+    "timer"
+  );
 
 const correctDisplay =
-  document.getElementById("correctCount");
+  document.getElementById(
+    "correctCount"
+  );
 
 const wrongDisplay =
-  document.getElementById("wrongCount");
+  document.getElementById(
+    "wrongCount"
+  );
 
 
-/* ------------------------
-   VARIABLES
------------------------- */
+/* ===============================
+   SPIELVARIABLEN
+================================ */
 
 let totalQuestions = 20;
 
@@ -977,9 +1079,9 @@ let timerInterval = null;
 let inputLocked = false;
 
 
-/* ------------------------
-   FRET POSITIONS
------------------------- */
+/* ===============================
+   BUNDPOSITIONEN
+================================ */
 
 const fretPositions = [];
 
@@ -988,12 +1090,16 @@ function calculateFretPositions() {
 
   fretPositions.length = 0;
 
+
   const rawMax =
+
     1 -
+
     Math.pow(
       2,
       -22 / 12
     );
+
 
   fretPositions.push(0);
 
@@ -1005,14 +1111,23 @@ function calculateFretPositions() {
   ) {
 
     const raw =
+
       1 -
+
       Math.pow(
         2,
         -fret / 12
       );
 
+
     fretPositions.push(
-      raw / rawMax * 100
+
+      raw
+      /
+      rawMax
+      *
+      100
+
     );
 
   }
@@ -1023,12 +1138,19 @@ function calculateFretPositions() {
 function getFretCenter(fret) {
 
   const left =
+
     fret === 1
-    ? 0
-    : fretPositions[fret - 1];
+
+      ? 0
+
+      : fretPositions[
+          fret - 1
+        ];
+
 
   const right =
     fretPositions[fret];
+
 
   return (
     left + right
@@ -1037,95 +1159,36 @@ function getFretCenter(fret) {
 }
 
 
-/* ------------------------
-   BOARD PERSPECTIVE
------------------------- */
+/* ===============================
+   SAITENPOSITION
+================================ */
 
-/*
-Links ist das Griffbrett
-schmaler.
-
-Rechts Richtung Korpus
-wird es breiter.
-
-x = Prozent von links nach rechts
-*/
-
-function getTopEdge(x) {
-
-  /*
-  links 20 %
-  rechts 0 %
-  */
-
-  return 20 * (1 - x / 100);
-
-}
-
-
-function getBottomEdge(x) {
-
-  /*
-  links 80 %
-  rechts 100 %
-  */
-
-  return 80 + 20 * (x / 100);
-
-}
-
-
-/*
-Position einer Saite
-innerhalb des Griffbrettes.
-
-0 = hohe E
-5 = tiefe E
-*/
-
-function getStringYAtX(
-  stringIndex,
-  x
+function getStringY(
+  stringIndex
 ) {
 
-  const top =
-    getTopEdge(x);
-
-  const bottom =
-    getBottomEdge(x);
-
   /*
-  etwas Abstand zum Rand
+  genügend Rand oben/unten
   */
 
-  const padding = 7;
-
-  const usableTop =
-    top + padding;
-
-  const usableBottom =
-    bottom - padding;
-
   return (
-    usableTop
+
+    8
+
     +
-    (
-      usableBottom
-      -
-      usableTop
-    )
+
+    stringIndex
     *
-    (
-      stringIndex / 5
-    )
+    16.8
+
   );
 
 }
 
 
-/* ------------------------
-   BUILD BOARD
------------------------- */
+/* ===============================
+   GRIFFBRETT BAUEN
+================================ */
 
 function buildFretboard() {
 
@@ -1138,22 +1201,7 @@ function buildFretboard() {
   fretLabels.innerHTML = "";
 
 
-  buildFrets();
-
-  buildStrings();
-
-  buildInlays();
-
-  buildLabels();
-
-}
-
-
-/* ------------------------
-   FRETS
------------------------- */
-
-function buildFrets() {
+  /* BÜNDE */
 
   for (
     let fret = 1;
@@ -1161,20 +1209,10 @@ function buildFrets() {
     fret++
   ) {
 
-    const x =
-      fretPositions[fret];
-
-
-    const top =
-      getTopEdge(x);
-
-
-    const bottom =
-      getBottomEdge(x);
-
-
     const line =
-      document.createElement("div");
+      document.createElement(
+        "div"
+      );
 
 
     line.className =
@@ -1182,128 +1220,91 @@ function buildFrets() {
 
 
     line.style.left =
-      x + "%";
 
+      fretPositions[fret]
 
-    line.style.top =
-      top + "%";
-
-
-    line.style.height =
-      (
-        bottom - top
-      )
       +
+
       "%";
 
 
-    frets.appendChild(line);
+    frets.appendChild(
+      line
+    );
+
+
+    /* NUMMER */
+
+    const label =
+      document.createElement(
+        "div"
+      );
+
+
+    label.className =
+      "fret-label";
+
+
+    label.textContent =
+      fret;
+
+
+    label.style.left =
+
+      getFretCenter(fret)
+
+      +
+
+      "%";
+
+
+    fretLabels.appendChild(
+      label
+    );
 
   }
 
-}
 
-
-/* ------------------------
-   STRINGS
------------------------- */
-
-function buildStrings() {
+  /* SAITEN */
 
   for (
-    let s = 0;
-    s < 6;
-    s++
+    let string = 0;
+    string < 6;
+    string++
   ) {
 
     const line =
-      document.createElement("div");
+      document.createElement(
+        "div"
+      );
 
 
     line.className =
+
       "string s"
+
       +
-      (s + 1);
 
-
-    /*
-    Anfang und Ende der Saite
-    */
-
-    const y1 =
-      getStringYAtX(
-        s,
-        0
-      );
-
-    const y2 =
-      getStringYAtX(
-        s,
-        100
-      );
-
-
-    const boardWidth =
-      fretboard.clientWidth;
-
-
-    const boardHeight =
-      fretboard.clientHeight;
-
-
-    const dy =
-      (
-        y2 - y1
-      )
-      /
-      100
-      *
-      boardHeight;
-
-
-    const angle =
-      Math.atan2(
-        dy,
-        boardWidth
-      )
-      *
-      180
-      /
-      Math.PI;
-
-
-    const length =
-      Math.sqrt(
-        boardWidth * boardWidth
-        +
-        dy * dy
-      );
+      (string + 1);
 
 
     line.style.top =
-      y1 + "%";
+
+      getStringY(string)
+
+      +
+
+      "%";
 
 
-    line.style.width =
-      length + "px";
-
-
-    line.style.transform =
-      `rotate(${angle}deg)`;
-
-
-    strings.appendChild(line);
+    strings.appendChild(
+      line
+    );
 
   }
 
-}
 
-
-/* ------------------------
-   INLAYS
------------------------- */
-
-function buildInlays() {
+  /* LES-PAUL INLAYS */
 
   const inlayFrets = [
     3,
@@ -1321,27 +1322,13 @@ function buildInlays() {
   inlayFrets.forEach(
     fret => {
 
-      const x =
-        getFretCenter(fret);
-
-
-      const y =
-        (
-          getTopEdge(x)
-          +
-          getBottomEdge(x)
-        )
-        /
-        2;
-
-
-      const inlay =
+      const element =
         document.createElement(
           "div"
         );
 
 
-      inlay.className =
+      element.className =
         "inlay";
 
 
@@ -1349,23 +1336,28 @@ function buildInlays() {
         fret === 12
       ) {
 
-        inlay.classList.add(
+        element.classList.add(
           "twelve"
         );
 
       }
 
 
-      inlay.style.left =
-        x + "%";
+      element.style.left =
+
+        getFretCenter(fret)
+
+        +
+
+        "%";
 
 
-      inlay.style.top =
-        y + "%";
+      element.style.top =
+        "50%";
 
 
       inlays.appendChild(
-        inlay
+        element
       );
 
     }
@@ -1374,50 +1366,9 @@ function buildInlays() {
 }
 
 
-/* ------------------------
-   LABELS
------------------------- */
-
-function buildLabels() {
-
-  for (
-    let fret = 1;
-    fret <= 22;
-    fret++
-  ) {
-
-    const label =
-      document.createElement(
-        "div"
-      );
-
-
-    label.className =
-      "fret-label";
-
-
-    label.textContent =
-      fret;
-
-
-    label.style.left =
-      getFretCenter(fret)
-      +
-      "%";
-
-
-    fretLabels.appendChild(
-      label
-    );
-
-  }
-
-}
-
-
-/* ------------------------
-   NOTE BUTTONS
------------------------- */
+/* ===============================
+   NOTENTASTEN
+================================ */
 
 function buildNoteButtons() {
 
@@ -1437,11 +1388,11 @@ function buildNoteButtons() {
         "note-btn";
 
 
-      button.textContent =
+      button.dataset.note =
         note;
 
 
-      button.dataset.note =
+      button.textContent =
         note;
 
 
@@ -1464,11 +1415,11 @@ function buildNoteButtons() {
 }
 
 
-/* ------------------------
+/* ===============================
    FEEDBACK
------------------------- */
+================================ */
 
-function clearButtonFeedback() {
+function clearFeedback() {
 
   document
     .querySelectorAll(
@@ -1488,19 +1439,22 @@ function clearButtonFeedback() {
 }
 
 
-/* ------------------------
-   START GAME
------------------------- */
+/* ===============================
+   START
+================================ */
 
 function startGame() {
 
   totalQuestions =
+
     Number(
+
       document
         .getElementById(
           "questionCount"
         )
         .value
+
     );
 
 
@@ -1532,21 +1486,7 @@ function startGame() {
     "block";
 
 
-  /*
-  nach dem Anzeigen
-  neu berechnen
-  */
-
-  setTimeout(
-    () => {
-
-      buildFretboard();
-
-      nextQuestion();
-
-    },
-    30
-  );
+  clearFeedback();
 
 
   startTime =
@@ -1564,27 +1504,38 @@ function startGame() {
       50
     );
 
+
+  nextQuestion();
+
 }
 
 
-/* ------------------------
-   NEXT QUESTION
------------------------- */
+/* ===============================
+   NÄCHSTE AUFGABE
+================================ */
 
 function nextQuestion() {
 
-  clearButtonFeedback();
+  clearFeedback();
 
-  inputLocked = false;
+  inputLocked =
+    false;
 
 
   progress.textContent =
+
     (
-      completedQuestions + 1
+      completedQuestions
+      +
+      1
     )
+
     +
+
     " / "
+
     +
+
     totalQuestions;
 
 
@@ -1596,27 +1547,34 @@ function nextQuestion() {
   do {
 
     newString =
+
       Math.floor(
         Math.random() * 6
       );
 
 
     newFret =
+
       Math.floor(
         Math.random() * 22
       )
+
       +
+
       1;
 
   }
+
   while (
 
-    newString ===
+    newString
+      ===
       previousString
 
     &&
 
-    newFret ===
+    newFret
+      ===
       previousFret
 
   );
@@ -1637,14 +1595,19 @@ function nextQuestion() {
 
 
   const noteIndex =
+
     (
       openStrings[
         currentString
       ]
+
       +
+
       currentFret
     )
+
     %
+
     12;
 
 
@@ -1657,42 +1620,43 @@ function nextQuestion() {
 }
 
 
-/* ------------------------
-   TARGET POSITION
------------------------- */
+/* ===============================
+   ROTE MARKIERUNG
+================================ */
 
 function positionTarget() {
 
-  const x =
+  target.style.left =
+
     getFretCenter(
       currentFret
-    );
+    )
 
+    +
 
-  const y =
-    getStringYAtX(
-      currentString,
-      x
-    );
-
-
-  target.style.left =
-    x + "%";
+    "%";
 
 
   target.style.top =
-    y + "%";
+
+    getStringY(
+      currentString
+    )
+
+    +
+
+    "%";
 
 }
 
 
-/* ------------------------
-   ANSWER
------------------------- */
+/* ===============================
+   ANTWORT
+================================ */
 
 function answer(
   selectedNote,
-  selectedButton
+  button
 ) {
 
   if (inputLocked) {
@@ -1700,15 +1664,19 @@ function answer(
   }
 
 
+  /* RICHTIG */
+
   if (
-    selectedNote ===
-    correctNote
+    selectedNote
+      ===
+      correctNote
   ) {
 
-    inputLocked = true;
+    inputLocked =
+      true;
 
 
-    selectedButton
+    button
       .classList
       .add(
         "correct"
@@ -1726,14 +1694,17 @@ function answer(
       () => {
 
         if (
+
           completedQuestions
-          >=
-          totalQuestions
+            >=
+            totalQuestions
+
         ) {
 
           endGame();
 
         }
+
         else {
 
           nextQuestion();
@@ -1746,9 +1717,13 @@ function answer(
 
   }
 
+
+  /* FALSCH */
+
   else {
 
-    inputLocked = true;
+    inputLocked =
+      true;
 
 
     errors++;
@@ -1758,7 +1733,7 @@ function answer(
       errors;
 
 
-    selectedButton
+    button
       .classList
       .add(
         "wrong"
@@ -1766,9 +1741,13 @@ function answer(
 
 
     const correctButton =
-      document.querySelector(
-        `.note-btn[data-note="${correctNote}"]`
-      );
+
+      document
+        .querySelector(
+
+          `.note-btn[data-note="${correctNote}"]`
+
+        );
 
 
     if (correctButton) {
@@ -1785,9 +1764,10 @@ function answer(
     setTimeout(
       () => {
 
-        clearButtonFeedback();
+        clearFeedback();
 
-        inputLocked = false;
+        inputLocked =
+          false;
 
       },
       400
@@ -1798,17 +1778,25 @@ function answer(
 }
 
 
-/* ------------------------
+/* ===============================
    TIMER
------------------------- */
+================================ */
 
 function updateTimer() {
 
+  const elapsed =
+
+    performance.now()
+
+    -
+
+    startTime;
+
+
   timerDisplay.textContent =
+
     formatTime(
-      performance.now()
-      -
-      startTime
+      elapsed
     );
 
 }
@@ -1836,34 +1824,54 @@ function formatTime(
 
   const tenths =
     Math.floor(
+
       (
         totalSeconds % 1
       )
+
       *
+
       10
+
     );
 
 
   return (
+
     String(minutes)
-      .padStart(2, "0")
+      .padStart(
+        2,
+        "0"
+      )
+
     +
+
     ":"
+
     +
+
     String(seconds)
-      .padStart(2, "0")
+      .padStart(
+        2,
+        "0"
+      )
+
     +
+
     "."
+
     +
+
     tenths
+
   );
 
 }
 
 
-/* ------------------------
-   END
------------------------- */
+/* ===============================
+   ENDE
+================================ */
 
 function endGame() {
 
@@ -1873,8 +1881,11 @@ function endGame() {
 
 
   finalTime =
+
     performance.now()
+
     -
+
     startTime;
 
 
@@ -1887,10 +1898,15 @@ function endGame() {
 
 
   const average =
+
     finalTime
+
     /
+
     totalQuestions
+
     /
+
     1000;
 
 
@@ -1899,6 +1915,7 @@ function endGame() {
       "resultTime"
     )
     .textContent =
+
       formatTime(
         finalTime
       );
@@ -1925,8 +1942,11 @@ function endGame() {
       "resultAverage"
     )
     .textContent =
+
       average.toFixed(2)
+
       +
+
       " s";
 
 
@@ -1935,49 +1955,67 @@ function endGame() {
 }
 
 
-/* ------------------------
-   BEST TIME
------------------------- */
+/* ===============================
+   BESTZEIT
+================================ */
 
 function saveBestTime() {
 
   const key =
+
     "guitarBest_"
+
     +
+
     totalQuestions;
 
 
   const oldBest =
+
     Number(
+
       localStorage
-        .getItem(key)
+        .getItem(
+          key
+        )
+
     );
 
 
-  const element =
-    document.getElementById(
-      "bestTime"
-    );
+  const display =
+
+    document
+      .getElementById(
+        "bestTime"
+      );
 
 
-  if (errors > 0) {
+  if (
+    errors > 0
+  ) {
 
     if (oldBest) {
 
-      element.textContent =
+      display.textContent =
+
         "Bestzeit ohne Fehler: "
+
         +
+
         formatTime(
           oldBest
         );
 
     }
+
     else {
 
-      element.textContent =
+      display.textContent =
+
         "Bestzeiten zählen nur ohne Fehler.";
 
     }
+
 
     return;
 
@@ -1985,30 +2023,46 @@ function saveBestTime() {
 
 
   if (
+
     !oldBest
+
     ||
-    finalTime < oldBest
+
+    finalTime
+      <
+      oldBest
+
   ) {
 
     localStorage.setItem(
+
       key,
+
       finalTime
+
     );
 
 
-    element.textContent =
+    display.textContent =
+
       "🏆 Neue Bestzeit: "
+
       +
+
       formatTime(
         finalTime
       );
 
   }
+
   else {
 
-    element.textContent =
+    display.textContent =
+
       "Bestzeit: "
+
       +
+
       formatTime(
         oldBest
       );
@@ -2018,9 +2072,9 @@ function saveBestTime() {
 }
 
 
-/* ------------------------
+/* ===============================
    EVENTS
------------------------- */
+================================ */
 
 document
   .getElementById(
@@ -2060,30 +2114,11 @@ document
   );
 
 
-window.addEventListener(
-  "resize",
-  () => {
-
-    if (
-      game.style.display ===
-      "block"
-    ) {
-
-      buildFretboard();
-
-      positionTarget();
-
-    }
-
-  }
-);
-
-
-/* ------------------------
-   INITIALIZE
------------------------- */
+/* INITIALISIERUNG */
 
 calculateFretPositions();
+
+buildFretboard();
 
 buildNoteButtons();
 
